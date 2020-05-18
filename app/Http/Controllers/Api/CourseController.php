@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Api\ApiMessages;
 use App\Course;
+use App\CoursePhoto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
 use App\Http\Resources\CourseCollection;
@@ -142,6 +143,24 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $courseRepository = new CourseRepository($this->course);
+
+            if($courseRepository->removeAllPhotosFromCourse($id)) {
+                $course = $this->course->findOrFail($id);
+                $course->delete();
+
+                $message = new ApiMessages("Course successfully deleted");
+
+                return response()->json($message->getMessage());
+            }
+
+            $message = new ApiMessages("Course is not deleted");
+            return response()->json($message->getMessage(), 500);
+
+        } catch (QueryException $e) {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
+        }
     }
 }

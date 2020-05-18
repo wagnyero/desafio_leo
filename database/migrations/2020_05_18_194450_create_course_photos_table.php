@@ -19,7 +19,7 @@ class CreateCoursePhotosTable extends Migration
             $table->string("photo");
             $table->boolean("is_thumb");
             $table->timestamps();
-            $table->foreign("course_id")->references("id")->on("courses");
+            $table->foreign("course_id")->references("id")->on("courses")->onDelete("cascade");
         });
     }
 
