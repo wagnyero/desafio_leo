@@ -7,73 +7,67 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
-## About Laravel
+## Sobre a API
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Desenvolvimento de uma API REST para cadastrar Cursos. Foi utilizado as seguintes tecnologias abaixo:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 7.4
+- Laravel 7.1
+- MariaDb
+- JSON
+- HTTP 1.1
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## Processo de instalação
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Fazer uma cópia do arquivo .env.example e salvar como .env
+- Criar um vhost em seu servidor para a pasta public do projeto
+- Criar um database chamado desafio_leo, com charset utf8 e collation utf8_unicode_ci
+- Executar o comando php artisan migrate
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## Utilização dos EndPoints
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- **ENDPOINT - Course**
+- Listagem de todos os Cursos  
+**GET**  http://seuservidor/api/v1/course  
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
-- [云软科技](http://www.yunruan.ltd/)
+- Listagem de um curso específico
+**GET**  http://seuservidor/api/v1/course/#ID  
+**CAMPOS**  
+#ID = Id do Curso que deseja-se excluir  
 
-## Contributing
+- Busca Personalizada: trazer apenas determinados campos  
+**GET**  http://seuservidor/api/v1/course?fields=id,title,description  
+**CAMPOS**  
+fields = informar todos os campos que desejar separados por virgula  
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Busca Personalizada: fazer busca parcial usando controladores como: =, >=, <=, like  
+**GET**  http://seuservidor/api/v1/course?coditions=title:like:r%;id:>=:10  
+**CAMPOS**  
+coditions = esse campo recebe todas as condições que desejar fazer, no exemplo acima a api irá retornar todos os cursos que iniciam com "r" e que o id seja maior ou igual a 10  
 
-## Code of Conduct
+**OBS** É possível fazer a busca parcial informando os dois campos juntos: fields e coditions  
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Novo Curso
+**POST**  http://seuservidor/api/v1/course  
+**CAMPOS**  
+title = título do curso  
+description = descrição do curso  
+link_slide_show = url do slide show  
+images[] = campo do tipo file, deve ser informada a imagem desejada  
 
-## Security Vulnerabilities
+- Alterar Curso
+**PUT**  http://seuservidor/api/v1/course  
+**CAMPOS**  
+title = título do curso  
+description = descrição do curso  
+link_slide_show = url do slide show  
+images[] = campo do tipo file, deve ser informada a nova imagem desejada  
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**OBS** Para multiplas imagens basta enviar multiplos campos do tipo images[]  
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Excluir Curso  
+**DELETE**  http://seuservidor/api/v1/course/#ID  
+**CAMPOS**  
+#ID = Id do Curso que deseja-se excluir  
