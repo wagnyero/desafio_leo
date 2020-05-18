@@ -6,6 +6,9 @@ use App\Api\ApiMessages;
 use App\Course;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
+use App\Http\Resources\CourseCollection;
+use App\Http\Resources\CourseResource;
+use App\Repository\CourseRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
@@ -23,9 +26,24 @@ class CourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try {
+            $courseRepository = new CourseRepository($this->course);
+
+            if($request->has("coditions")) {
+                $courseRepository->selectCoditions($request->coditions);
+            }
+
+            if($request->has("fields")) {
+                $courseRepository->selectFilter($request->fields);
+            }
+
+            return new CourseCollection($courseRepository->getResult()->with("coursePhoto")->paginate(10));
+        } catch (QueryException $e) {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
+        }
     }
 
     /**
@@ -68,7 +86,16 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $course = $this->course
+                        ->with("coursePhoto")
+                        ->findOrFail($id);
+
+            return new CourseResource($course);
+        } catch (QueryException $e) {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
+        }
     }
 
     /**
