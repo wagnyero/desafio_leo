@@ -107,7 +107,31 @@ class CourseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $courseRepository = new CourseRepository($this->course);
+            if($courseRepository->validationUpdate($request, $id)) {
+                $course = $this->course->findOrFail($id);
+                $course->update($request->all());
+
+                if($request->hasFile("images")) {
+                    $imagesUploaded = [];
+
+                    foreach ($request->images as $image) {
+                        $path = $image->store("images", "public");
+                        $imagesUploaded[] = ["photo" => $path, "is_thumb" => false];
+                    }
+
+                    $course->coursePhoto()->createMany($imagesUploaded);
+                }
+            }
+
+            $message = new ApiMessages("Course successfully updated");
+
+            return response()->json($message->getMessage());
+        } catch (QueryException $e) {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
+        }
     }
 
     /**
